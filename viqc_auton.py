@@ -1,6 +1,6 @@
 from vex import *
 
-def forward(distance, speed):
+def forward(distance, speed=100):
     rightmotor.set_position(0, DEGREES)
     leftmotor.set_position(0, DEGREES)
     brain_inertial.set_rotation(0, DEGREES)
@@ -13,7 +13,7 @@ def forward(distance, speed):
     leftmotor.stop()
     rightmotor.stop()
 
-def gyro_turn(heading, velocity, momentum):
+def gyro_turn(heading, momentum, velocity=100):
     gyro_10.set_rotation(0, DEGREES)
     if heading > gyro_10.rotation():
         while heading - momentum > gyro_10.rotation():
@@ -32,7 +32,7 @@ def gyro_turn(heading, velocity, momentum):
     leftmotor.stop()
     rightmotor.stop()
 
-def backward(distance, speed):
+def backward(distance, speed=100):
     rightmotor.set_position(0, DEGREES)
     leftmotor.set_position(0, DEGREES)
     brain_inertial.set_rotation(0, DEGREES)
@@ -47,13 +47,15 @@ def backward(distance, speed):
 
 
 
-def when_started1():
+def when_started():
+    # setup
     intake.set_max_torque(100, PERCENT)
     hopper.set_max_torque(100, PERCENT)
     intake.set_velocity(100, PERCENT)
     hopper.set_velocity(100, PERCENT)
     intake.spin(FORWARD)
     gyro_10.calibrate(GyroCalibrationType.NORMAL)
-    gyro_turn(90, 50, 5)
 
-when_started1()
+    # movement
+
+when_started()
