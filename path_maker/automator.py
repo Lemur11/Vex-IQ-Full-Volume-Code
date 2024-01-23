@@ -298,13 +298,13 @@ class Logic:
             rot_chng = (rot - self.bot_dir) % 360
         # add turn code to program
         if rot_chng < 0:
-            codeBit += f"gyro_turn(-{abs(rot_chng)}, {5})"
+            codeBit += f"gyro_turn(-{round(abs(rot_chng))}, {5})"
         elif rot_chng > 0:
-            codeBit += f"gyro_turn({abs(rot_chng)}, {5})"
+            codeBit += f"gyro_turn({round(abs(rot_chng))}, {5})"
         self.bot_dir = rot  # since we already moved by rot_chng, our bot should be a rot rotation
         dist = round(
             math.sqrt(x_chng ** 2 + y_chng ** 2) * 2.6)  # conv rate between our units and mm is 300/115 or approx 2.6
-        codeBit += f"\nforward({dist})"  # add forward movement to bot
+        codeBit += f"\nforward({round(dist)})"  # add forward movement to bot
         self.points.append(pos)  # add new points to points
         self.code.append(codeBit)  # add code lines to main code
 
