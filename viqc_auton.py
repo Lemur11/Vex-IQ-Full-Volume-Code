@@ -1,7 +1,9 @@
 from vex import *
 MOMENTUM = 5
+MM_to_DEG = None
 
 def forward(distance, speed=100):
+    distance *= MM_to_DEG
     rightmotor.set_position(0, DEGREES)
     leftmotor.set_position(0, DEGREES)
     brain_inertial.set_rotation(0, DEGREES)
@@ -10,6 +12,20 @@ def forward(distance, speed=100):
         rightmotor.set_velocity((speed + brain_inertial.rotation()), PERCENT)
         leftmotor.spin(FORWARD)
         rightmotor.spin(FORWARD)
+        wait(20, MSEC)
+    leftmotor.stop()
+    rightmotor.stop()
+
+def backward(distance, speed=100):
+    distance *= MM_to_DEG
+    rightmotor.set_position(0, DEGREES)
+    leftmotor.set_position(0, DEGREES)
+    brain_inertial.set_rotation(0, DEGREES)
+    while (leftmotor.position(DEGREES) + rightmotor.position(DEGREES)) / 2 > distance:
+        leftmotor.set_velocity((speed - brain_inertial.rotation()), PERCENT)
+        rightmotor.set_velocity((speed + brain_inertial.rotation()), PERCENT)
+        leftmotor.spin(REVERSE)
+        rightmotor.spin(REVERSE)
         wait(20, MSEC)
     leftmotor.stop()
     rightmotor.stop()
@@ -32,21 +48,6 @@ def gyro_turn(heading, momentum=MOMENTUM, velocity=100):
             wait(20, MSEC)
     leftmotor.stop()
     rightmotor.stop()
-
-def backward(distance, speed=100):
-    rightmotor.set_position(0, DEGREES)
-    leftmotor.set_position(0, DEGREES)
-    brain_inertial.set_rotation(0, DEGREES)
-    while (leftmotor.position(DEGREES) + rightmotor.position(DEGREES)) / 2 > distance:
-        leftmotor.set_velocity((speed - brain_inertial.rotation()), PERCENT)
-        rightmotor.set_velocity((speed + brain_inertial.rotation()), PERCENT)
-        leftmotor.spin(REVERSE)
-        rightmotor.spin(REVERSE)
-        wait(20, MSEC)
-    leftmotor.stop()
-    rightmotor.stop()
-
-
 
 def when_started():
     # setup
