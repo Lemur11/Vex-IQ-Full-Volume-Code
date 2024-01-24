@@ -304,7 +304,7 @@ class Logic:
         self.bot_dir = rot  # since we already moved by rot_chng, our bot should be a rot rotation
         dist = round(
             math.sqrt(x_chng ** 2 + y_chng ** 2) * 2.6)  # conv rate between our units and mm is 300/115 or approx 2.6
-        codeBit += f"\nforward({round(dist)})"  # add forward movement to bot
+        codeBit += f"\nmove({round(dist)})"  # add forward movement to bot
         self.points.append(pos)  # add new points to points
         self.code.append(codeBit)  # add code lines to main code
 
