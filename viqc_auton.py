@@ -1,35 +1,87 @@
 #config: {leftmotor:4, rightmotor(rev):9, brain_inertial:10, intake:[6(rev),12], hopper:[5, 11(rev)]}
 
-MOMENTUM = 25
-ADJUSTMENT = 2;
+#region VEXcode Generated Robot Configuration
+from vex import *
+import urandom
 
-def move(dist, speed=80, kp=2):
-  leftmotor.set_position(0, DEGREES)
-  rightmotor.set_position(0, DEGREES)
-  brain_inertial.set_rotation(0, DEGREES)
-  # speed *= -1
-  if dist < 0:
-      while leftmotor.position(DEGREES) > dist:
-          error = (brain_inertial.rotation(DEGREES)) * kp
-          print(leftmotor.position(DEGREES))
-          leftmotor.set_velocity(speed*-1 - (error+ADJUSTMENT))
-          rightmotor.set_velocity(speed*-1 + (error))
-          leftmotor.spin(FORWARD)
-          rightmotor.spin(FORWARD)
-          if (abs(brain_inertial.rotation()) < 20):
-              brain_inertial.set_rotation(0, DEGREES)
-  else:
-      while leftmotor.position(DEGREES) < dist:
-          print(leftmotor.position(DEGREES))
-          error = (brain_inertial.rotation()) * kp
-          leftmotor.set_velocity(speed + (error+ADJUSTMENT))
-          rightmotor.set_velocity(speed - (error))
-          leftmotor.spin(FORWARD)
-          rightmotor.spin(FORWARD)
-          if (abs(brain_inertial.rotation()) < 20):
-              brain_inertial.set_rotation(0, DEGREES)
-  rightmotor.stop()
-  leftmotor.stop()
+# Brain should be defined by default
+brain=Brain()
+
+# Robot configuration code
+brain_inertial = Inertial()
+leftmotor = Motor(Ports.PORT4, False)
+rightmotor = Motor(Ports.PORT9, True)
+gyro_10 = Gyro(Ports.PORT10)
+
+
+
+# Make random actually random
+def setRandomSeedUsingAccel():
+    wait(100, MSEC)
+    xaxis = brain_inertial.acceleration(XAXIS) * 1000
+    yaxis = brain_inertial.acceleration(YAXIS) * 1000
+    zaxis = brain_inertial.acceleration(ZAXIS) * 1000
+    urandom.seed(int(xaxis + yaxis + zaxis))
+    
+# Set random seed 
+setRandomSeedUsingAccel()
+
+#endregion VEXcode Generated Robot Configuration
+
+# ------------------------------------------
+# 
+# 	Project:      VEXcode Project
+# 	Author:       VEX
+# 	Created:
+# 	Description:  VEXcode IQ Python Project
+# 
+# ------------------------------------------
+
+# Library imports
+from vex import *
+MOMENTUM = 10
+kp = 1
+fixer = 20
+
+# Begin project code
+def move(dist, momentum=MOMENTUM):
+    if dist > 0:
+        leftmotor.set_velocity(100, RPM)
+        rightmotor.set_velocity(100, RPM)
+        leftmotor.set_position(0, DEGREES)
+        rightmotor.set_position(0, DEGREES)
+        leftmotor.spin(FORWARD)
+        rightmotor.spin(FORWARD)
+        wait(0.2, SECONDS)  # changed
+        while (leftmotor.position(DEGREES) + rightmotor.position(DEGREES))/2 - momentum < dist:
+            diff = (leftmotor.velocity(RPM) - rightmotor.velocity(RPM))*kp
+            if diff > 0:
+                leftmotor.set_velocity(leftmotor.velocity(RPM) - abs(diff) + fixer, RPM)
+            else:
+                rightmotor.set_velocity(rightmotor.velocity(RPM) - abs(diff) + fixer, RPM)
+            leftmotor.spin(FORWARD)
+            rightmotor.spin(FORWARD)
+        leftmotor.stop()
+        rightmotor.stop()
+    else:
+        # dist is negative
+        leftmotor.set_velocity(-80, RPM)
+        rightmotor.set_velocity(-80, RPM)
+        leftmotor.set_position(0, DEGREES)
+        rightmotor.set_position(0, DEGREES)
+        leftmotor.spin(FORWARD)
+        rightmotor.spin(FORWARD)
+        wait(0.2, SECONDS)
+        t = -80
+        while (leftmotor.position(DEGREES) + rightmotor.position(DEGREES))/2 + momentum > dist:
+            off_l = t - leftmotor.velocity(RPM)
+            off_r = t - rightmotor.velocity(RPM)
+            leftmotor.set_velocity(t+off_l)
+            rightmotor.set_velocity(t+off_l)
+            leftmotor.spin(FORWARD)
+            rightmotor.spin(FORWARD)
+        leftmotor.stop()
+        rightmotor.stop()
 
 def gyro_turn(direction, momentum=MOMENTUM, speed=80):
    gyro_10.calibrate(GyroCalibrationType.NORMAL)
@@ -53,6 +105,7 @@ def gyro_turn(direction, momentum=MOMENTUM, speed=80):
           wait(20, MSEC)
       leftmotor.stop()
       rightmotor.stop()
+
 intake.set_max_torque(100, PERCENT)
 hopper.set_max_torque(100, PERCENT)
 intake.set_velocity(100, PERCENT)
