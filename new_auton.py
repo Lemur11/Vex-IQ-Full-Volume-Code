@@ -10,7 +10,9 @@ def forward(dist):
     rightmotor.set_position(0, DEGREES)
     leftmotor.set_velocity(100, PERCENT)
     rightmotor.set_velocity(100, PERCENT)
+    # u sure u dont wanna reset gyro?
     while True:
+        #why is momentum in the move function
         if (rightmotor.position(DEGREES) + leftmotor.position(DEGREES))/2 - momentum >= dist:
             break
         rot = gyro_10.rotation()
