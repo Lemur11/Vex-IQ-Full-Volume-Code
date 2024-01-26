@@ -1,4 +1,4 @@
-# Library imports
+#config: {leftmotor:4, rightmotor(rev):9, gyro_10:10, intake:[6(rev),12], hopper:[5, 11(rev)]}
 from vex import *
 momentum = 5
 
