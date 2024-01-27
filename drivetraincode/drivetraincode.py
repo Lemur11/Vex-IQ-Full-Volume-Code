@@ -55,6 +55,6 @@ def hdown():
 def gyro_turn(direction, speed=50):
     x = 0
     for x in range(6):
-        drivetrain.set_turn_velocity((speed/20)*x, PERCENT)
+        drivetrain.set_turn_velocity((speed/20)*(5-x), PERCENT)
         drivetrain.turn_to_heading(direction, DEGREES)
 # Code goes here
