@@ -1,3 +1,52 @@
+#region VEXcode Generated Robot Configuration
+from vex import *
+import urandom
+
+# Brain should be defined by default
+brain=Brain()
+
+# Robot configuration code
+brain_inertial = Inertial()
+intake_motor_a = Motor(Ports.PORT6, True)
+intake_motor_b = Motor(Ports.PORT12, False)
+intake = MotorGroup(intake_motor_a, intake_motor_b)
+hopper_motor_a = Motor(Ports.PORT5, False)
+hopper_motor_b = Motor(Ports.PORT11, True)
+hopper = MotorGroup(hopper_motor_a, hopper_motor_b)
+left_drive_smart = Motor(Ports.PORT1, 1.0, False)
+right_drive_smart = Motor(Ports.PORT7, 1.0, True)
+
+drivetrain = SmartDrive(left_drive_smart, right_drive_smart, brain_inertial, 200)
+
+
+
+# Make random actually random
+def setRandomSeedUsingAccel():
+    wait(100, MSEC)
+    xaxis = brain_inertial.acceleration(XAXIS) * 1000
+    yaxis = brain_inertial.acceleration(YAXIS) * 1000
+    zaxis = brain_inertial.acceleration(ZAXIS) * 1000
+    urandom.seed(int(xaxis + yaxis + zaxis))
+    
+# Set random seed 
+setRandomSeedUsingAccel()
+
+vexcode_initial_drivetrain_calibration_completed = False
+def calibrate_drivetrain():
+    # Calibrate the Drivetrain Inertial
+    global vexcode_initial_drivetrain_calibration_completed
+    sleep(200, MSEC)
+    brain.screen.print("Calibrating")
+    brain.screen.next_row()
+    brain.screen.print("Inertial")
+    brain_inertial.calibrate()
+    while brain_inertial.is_calibrating():
+        sleep(25, MSEC)
+    vexcode_initial_drivetrain_calibration_completed = True
+    brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
+
+#endregion VEXcode Generated Robot Configuration
 # Begin project code
 from vex import *
 momentum = 5
@@ -121,7 +170,10 @@ shake(6)
 purple()
 gyro_turn(-170)
 drivetrain.set_timeout(5, SECONDS)
-move(-700)
+left_drive_smart.set_velocity(90, PERCENT)
+right_drive_smart.set_velocity(100, PERCENT)
+left_drive_smart.spin_for(REVERSE, -700, DEGREES)
+right_drive_smart.spin_for(REVERSE, -700, DEGREES)
 green()
 ws3 = Thread(vibrate_hopper)
 shake(10, amount=10)
