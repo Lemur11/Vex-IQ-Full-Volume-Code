@@ -122,10 +122,12 @@ def lower_hopper():
 s = Thread(state)
 
 # 4 cubes in far goal
-# drive_(2300, 100)
-# turn_(115, 80)
-# drive_(200, -100)
-# hopper.spin_for(FORWARD, 1800, DEGREES)
+drive_(2300, 100)
+turn_(115, 80)
+drive_(200, -100)
+hopper.spin_for(FORWARD, 1800, DEGREES)
+hopper.set_position(900, DEGREES)
+l = Thread(lower_hopper)
 
 # put cluster in near goal
 touchled_1.set_color(Color.BLUE)
@@ -144,6 +146,7 @@ drivetrain.set_timeout(5, SECONDS)
 drive_(500, -100)
 wait(4, SECONDS)
 hopper.spin_for(FORWARD, 1800, DEGREES)
+hopper.set_position(900, DEGREES)
 wait(5, SECONDS)
 l = Thread(lower_hopper)
 
@@ -176,6 +179,7 @@ drivetrain.set_timeout(5, SECONDS)
 drive_(500, -100)
 wait(4, SECONDS)
 hopper.spin_for(FORWARD, 1800, DEGREES)
+hopper.set_position(900, DEGREES)
 wait(5, SECONDS)
 # partial park
 drive_(2000, -100)
