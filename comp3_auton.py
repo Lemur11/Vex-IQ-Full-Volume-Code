@@ -1,3 +1,4 @@
+# Library imports
 from vex import *
 
 # Constants
@@ -29,5 +30,15 @@ def move(amnt, speed):
     left_drive_smart.stop()
     right_drive_smart.stop()
 
-
-move(10000, 100)
+def trun(degs):
+    drivetrain.set_heading(0, DEGREES)
+    drivetrain.set_turn_velocity(100, PERCENT)
+    left_drive_smart.set_velocity(100, PERCENT)
+    right_drive_smart.set_velocity(100, PERCENT)
+    degrs = degs * (2+(2/9))
+    left_drive_smart.spin_for(FORWARD, degrs, DEGREES, wait=False)
+    right_drive_smart.spin_for(FORWARD, -1*degrs, DEGREES)
+    if degs < 0:
+        drivetrain.turn_to_heading(360-degs, DEGREES)
+    else:
+        drivetrain.turn_to_heading(degs, DEGREES)
