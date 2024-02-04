@@ -78,8 +78,8 @@ def move(amnt, speed):
         error = brain_inertial.rotation(DEGREES) * kp
         left_correct = speed - max(0, rot)
         right_correct = speed - abs(min(0, rot))
-        leftmotor.set_velocity(left_correct)
-        rightmotor.set_velocity(right_correct)
+        left_drive_smart.set_velocity(left_correct)
+        right_drive_smart.set_velocity(right_correct)
         wait(0.5, SECONDS)
     left_drive_smart.stop()
     right_drive_smart.stop()
