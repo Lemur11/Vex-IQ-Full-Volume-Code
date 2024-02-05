@@ -1,9 +1,11 @@
-# Library imports
 from vex import *
 
 # Constants
 kp = 1.5
-
+#if we multiply the degrees we wanna turn by tcov, we get the amount of degs we want our motors to spin
+# do we wanna round this?
+#it works pretty well set to 2.3
+tcov = 2.29651852
 
 # State thread
 def state():
@@ -29,16 +31,20 @@ def move(amnt, speed):
         wait(0.5, SECONDS)
     left_drive_smart.stop()
     right_drive_smart.stop()
+def trunr(degs):
+    degs *= tcov
+    while (abs(left_drive_smart.position(DEGREES))+abs(right_drive_smart.position(DEGREES)))/2 < degs:
+        left_drive_smart.spin(FORWARD)
+        right_drive_smart.spin(REVERSE)
+    left_drive_smart.stop()
+    right_drive_smart.stop()
+    wait(0.5, SECONDS)
 
-def trun(degs):
-    drivetrain.set_heading(0, DEGREES)
-    drivetrain.set_turn_velocity(100, PERCENT)
-    left_drive_smart.set_velocity(100, PERCENT)
-    right_drive_smart.set_velocity(100, PERCENT)
-    degrs = degs * (2+(2/9))
-    left_drive_smart.spin_for(FORWARD, degrs, DEGREES, wait=False)
-    right_drive_smart.spin_for(FORWARD, -1*degrs, DEGREES)
-    if degs < 0:
-        drivetrain.turn_to_heading(360-degs, DEGREES)
-    else:
-        drivetrain.turn_to_heading(degs, DEGREES)
+def trunl(degs):
+    degs *= tcov
+    while (abs(left_drive_smart.position(DEGREES))+abs(right_drive_smart.position(DEGREES)))/2 < degs:
+        left_drive_smart.spin(REVERSE)
+        right_drive_smart.spin(FORWARD)
+    left_drive_smart.stop()
+    right_drive_smart.stop()
+    wait(0.5, SECONDS)
